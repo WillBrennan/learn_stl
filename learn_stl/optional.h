@@ -46,6 +46,32 @@ class optional {
         value();
     }
 
+    void swap(optional& other) noexcept {
+        if (!has_value_ && !other.has_value_) {
+            return;
+        }
+
+        if (has_value_ && !other.has_value) {
+            other = std::move(**this);
+            this->operator~();
+        }
+
+        if (!has_value_ && other.has_value) {
+            **this = std::move(other);
+            other->operator~();
+        }
+
+        std::swap(**this, *other);
+    }
+
+    void reset() noexcept { has_value_ = false; }
+
+    template <typename... Args>
+    Object& emplace(Args&&... args) {
+        has_value_ = true;
+        new (&storage_) Object(args...);
+    }
+
   private:
     using Storage = std::aligned_storage<sizeof(Object)>;
     bool has_value_;
