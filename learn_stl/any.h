@@ -76,7 +76,7 @@ const Object& any_cast(const any* value) {
         throw std::bad_cast();
     }
 
-    return static_cast<const any::Container<Object>&>(*value).data;
+    return static_cast<const any::Container<Object>&>(*value->container_).data;
 }
 
 template <typename Object>
@@ -85,7 +85,7 @@ Object& any_cast(any* value) {
         throw std::bad_cast();
     }
 
-    return static_cast<any::Container<Object>&>(*value).data;
+    return static_cast<any::Container<Object>&>(*value->container_).data;
 }
 }  // namespace detail
 
