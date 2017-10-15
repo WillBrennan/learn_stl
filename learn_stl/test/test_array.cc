@@ -88,7 +88,7 @@ TEST(Array, back) {
 
 TEST(Array, data) {
     using Array = learn::array<double, 4>;
-    
+
     Array array = {0.0, 1.0, 2.0, 3.4};
 
     ASSERT_NEAR(*array.data(), 0.0, 1E-8);

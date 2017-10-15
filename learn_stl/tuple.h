@@ -15,8 +15,10 @@ struct tuple;
 
 template <std::size_t... Indices, typename... Types>
 struct tuple<index_sequence<Indices...>, Types...> : tuple_element<Indices, Types>... {
-    tuple(const Types&... elements) : tuple_element<Indices, Types>(elements)... {}
-    tuple(Types&&... elements) : tuple_element<Indices, Types>(std::forward<Types>(elements))... {}
+    explicit constexpr tuple(const Types&... elements)
+        : tuple_element<Indices, Types>(elements)... {}
+    explicit constexpr tuple(Types&&... elements)
+        : tuple_element<Indices, Types>(std::forward<Types>(elements))... {}
 };
 
 template <size_t I, typename Head, typename... Tail>
@@ -41,11 +43,11 @@ template <std::size_t I, typename Type>
 class tuple_element {
   public:
     using type = Type;
-    explicit tuple_element(const type& value) : value_(value) {}
-    explicit tuple_element(Type&& value) : value_(std::move(value)) {}
+    explicit constexpr tuple_element(const type& value) : value_(value) {}
+    explicit constexpr tuple_element(Type&& value) : value_(std::move(value)) {}
 
-    Type& get() { return value_; }
-    const Type& get() const { return value_; }
+    constexpr Type& get() { return value_; }
+    constexpr const Type& get() const { return value_; }
 
   private:
     Type value_;
@@ -60,18 +62,24 @@ class tuple_element<I, tuple<Types...>> {
 template <std::size_t I, typename Tuple>
 using tuple_element_t = typename tuple_element<I, Tuple>::type;
 
+template <class Types>
+class tuple_size;
+
+template <typename... Types>
+class tuple_size<tuple<Types...>> : public std::integral_constant<std::size_t, sizeof...(Types)> {};
+
 template <typename... Types>
 class tuple : public detail::tuple<typename make_index_sequence<sizeof...(Types)>::type, Types...> {
   public:
-    explicit tuple(const Types&... elements) : TupleImpl(elements...) {}
-    explicit tuple(Types&&... elements) : TupleImpl(std::forward<Types>(elements)...) {}
+    explicit constexpr tuple(const Types&... elements) : TupleImpl(elements...) {}
+    explicit constexpr tuple(Types&&... elements) : TupleImpl(std::forward<Types>(elements)...) {}
 
   private:
     using TupleImpl = detail::tuple<typename make_index_sequence<sizeof...(Types)>::type, Types...>;
 };
 
 template <std::size_t Index, typename... Types>
-auto& get(tuple<Types...>& data) noexcept {
+constexpr auto& get(tuple<Types...>& data) noexcept {
     using Tuple = tuple<Types...>;
     using Type = tuple_element_t<Index, Tuple>;
     using Element = tuple_element<Index, Type>;
@@ -79,7 +87,7 @@ auto& get(tuple<Types...>& data) noexcept {
 };
 
 template <std::size_t Index, typename... Types>
-const auto& get(const tuple<Types...>& data) noexcept {
+constexpr const auto& get(const tuple<Types...>& data) noexcept {
     using Tuple = tuple<Types...>;
     using Type = tuple_element_t<Index, Tuple>;
     using Element = tuple_element<Index, Type>;

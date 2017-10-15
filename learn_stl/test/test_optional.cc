@@ -48,7 +48,7 @@ TYPED_TEST(OptionalTest, value) {
     EXPECT_EQ(optional.value(), generate<TypeParam>());
 }
 
-TYPED_TEST(OptionalTest, DISABLED_constValue) {
+TYPED_TEST(OptionalTest, constValue) {
     using Optional = learn::optional<TypeParam>;
 
     Optional optional;
@@ -77,5 +77,9 @@ TYPED_TEST(OptionalTest, emplace) {
     Optional optional;
     optional.emplace(generate<TypeParam>());
 
-    EXPECT_EQ(optional.value(), generate<TypeParam>());
+    if (std::is_scalar_v<TypeParam>) {
+        EXPECT_NEAR(optional.value(), generate<TypeParam>(), 1E-6);
+    } else {
+        EXPECT_EQ(optional.value(), generate<TypeParam>());
+    }
 }

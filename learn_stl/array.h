@@ -23,28 +23,32 @@ struct array {
 
     value_type elems_[Size > 0 ? Size : 1];
 
-    iterator begin() noexcept { return iterator(elems_); }
-    const_iterator begin() const noexcept { return const_iterator(elems_); }
-    const_iterator cbegin() const noexcept { return const_iterator(elems_); }
+    constexpr iterator begin() noexcept { return iterator(elems_); }
+    constexpr const_iterator begin() const noexcept { return const_iterator(elems_); }
+    constexpr const_iterator cbegin() const noexcept { return const_iterator(elems_); }
 
-    iterator end() { return iterator(elems_ + Size); }
-    const_iterator end() const noexcept { return const_iterator(elems_ + Size); }
-    const_iterator cend() const noexcept { return const_iterator(elems_ + Size); }
+    constexpr iterator end() { return iterator(elems_ + Size); }
+    constexpr const_iterator end() const noexcept { return const_iterator(elems_ + Size); }
+    constexpr const_iterator cend() const noexcept { return const_iterator(elems_ + Size); }
 
-    reverse_iterator rbegin() noexcept { return reverse_iterator(end()); }
-    const_reverse_iterator rbegin() const noexcept { return const_reverse_iterator(end()); }
+    constexpr reverse_iterator rbegin() noexcept { return reverse_iterator(end()); }
+    constexpr const_reverse_iterator rbegin() const noexcept {
+        return const_reverse_iterator(end());
+    }
 
-    reverse_iterator rend() noexcept { return reverse_iterator(begin()); }
-    const_reverse_iterator rend() const noexcept { return const_reverse_iterator(begin()); }
+    constexpr reverse_iterator rend() noexcept { return reverse_iterator(begin()); }
+    constexpr const_reverse_iterator rend() const noexcept {
+        return const_reverse_iterator(begin());
+    }
 
-    bool empty() const noexcept { return Size == 0; }
-    size_type size() const noexcept { return Size; }
-    size_type max_size() const noexcept { return Size; }
+    constexpr bool empty() const noexcept { return Size == 0; }
+    constexpr size_type size() const noexcept { return Size; }
+    constexpr size_type max_size() const noexcept { return Size; }
 
     void fill(const value_type& value) { std::fill_n(elems_, Size, value); }
     void swap(array& other) { std::swap(elems_, other.elems_); }
 
-    reference at(size_type pos) {
+    constexpr reference at(size_type pos) {
         if (pos >= Size) {
             throw std::out_of_range("out of range access of array");
         }
@@ -52,7 +56,7 @@ struct array {
         return elems_[pos];
     }
 
-    const_reference at(size_type pos) const {
+    constexpr const_reference at(size_type pos) const {
         if (pos >= Size) {
             throw std::out_of_range("out of range access of array");
         }
@@ -60,17 +64,17 @@ struct array {
         return elems_[pos];
     }
 
-    reference operator[](size_type pos) { return elems_[pos]; }
-    const_reference operator[](size_type pos) const { return elems_[pos]; }
+    constexpr reference operator[](size_type pos) { return elems_[pos]; }
+    constexpr const_reference operator[](size_type pos) const { return elems_[pos]; }
 
-    reference front() { return elems_[0]; }
-    const_reference front() const { return elems_[0]; }
+    constexpr reference front() { return elems_[0]; }
+    constexpr const_reference front() const { return elems_[0]; }
 
-    reference back() { return elems_[Size > 0 ? Size - 1 : 0]; }
-    const_reference back() const { return elems_[Size > 0 ? Size - 1 : 0]; }
+    constexpr reference back() { return elems_[Size > 0 ? Size - 1 : 0]; }
+    constexpr const_reference back() const { return elems_[Size > 0 ? Size - 1 : 0]; }
 
-    pointer data() { return pointer(elems_); }
-    const_pointer data() const { return const_pointer(elems_); }
+    constexpr pointer data() { return pointer(elems_); }
+    constexpr const_pointer data() const { return const_pointer(elems_); }
 };
 
 template <size_t I, class Type, std::size_t Size>
@@ -81,26 +85,29 @@ class tuple_element<I, array<Type, Size>> {
     using type = Type;
 };
 
+template <class Type, std::size_t Size>
+class tuple_size<array<Type, Size>> : public std::integral_constant<size_t, Size> {};
+
 template <size_t I, class Type, std::size_t Size>
-Type& get(array<Type, Size>& data) {
+constexpr Type& get(array<Type, Size>& data) {
     static_assert(I < Size, "Index out of bounds in learn::get<> (learn::array)");
     return data[I];
 }
 
 template <size_t I, class Type, std::size_t Size>
-const Type& get(const array<Type, Size>& data) {
+constexpr const Type& get(const array<Type, Size>& data) {
     static_assert(I < Size, "Index out of bounds in learn::get<> (learn::array)");
     return data[I];
 }
 
 template <size_t I, class Type, std::size_t Size>
-Type&& get(array<Type, Size>&& data) {
+constexpr Type&& get(array<Type, Size>&& data) {
     static_assert(I < Size, "Index out of bounds in learn::get<> (learn::array)");
     return data[I];
 }
 
 template <size_t I, class Type, std::size_t Size>
-const Type&& get(const array<Type, Size>&& data) {
+constexpr const Type&& get(const array<Type, Size>&& data) {
     static_assert(I < Size, "Index out of bounds in learn::get<> (learn::array)");
     return data[I];
 }
