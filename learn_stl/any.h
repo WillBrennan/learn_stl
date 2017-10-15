@@ -99,4 +99,6 @@ Object& any_cast(any& value) {
     return detail::any_cast<Object>(&value);
 }
 
+void swap(any& lhs, any& rhs) { lhs.swap(rhs); }
+
 }  // namespace learn

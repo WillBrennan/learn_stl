@@ -59,6 +59,7 @@ TYPED_TEST(AnyTest, reset) {
 
 TYPED_TEST(AnyTest, swap) {
     using learn::any;
+    using learn::swap;
 
     any any_value0 = generate<TypeParam>();
     any any_value1;
@@ -67,6 +68,10 @@ TYPED_TEST(AnyTest, swap) {
 
     EXPECT_FALSE(any_value0.has_value());
     EXPECT_TRUE(any_value1.has_value());
+
+    swap(any_value0, any_value1);
+    EXPECT_TRUE(any_value0.has_value());
+    EXPECT_FALSE(any_value1.has_value());
 }
 
 TYPED_TEST(AnyTest, type) {
