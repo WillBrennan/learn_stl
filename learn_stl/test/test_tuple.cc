@@ -45,4 +45,3 @@ TEST(Tuple, get) {
     EXPECT_EQ(learn::get<3>(tuple), 'a');
     EXPECT_EQ(learn::get<4>(tuple), 3u);
 }
-
