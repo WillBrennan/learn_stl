@@ -12,6 +12,7 @@ class optional {
     optional(Object&& object) : has_value_(true) {
         new (&storage_) Object(std::forward<Object>(object));
     }
+
     optional(const Object& object) : has_value_(true) { new (&storage_) Object(object); }
 
     optional& operator=(const Object& object) {

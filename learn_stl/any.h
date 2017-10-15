@@ -16,7 +16,7 @@ Object& any_cast(any* value);
 }  // namespace detail
 class any {
   public:
-    any() {}
+    any() = default;
 
     template <typename Object>
     any(const Object& object)
@@ -53,17 +53,17 @@ class any {
 
   private:
     struct ContainerInterface {
-        virtual ~ContainerInterface() {}
+        virtual ~ContainerInterface() = default;
         virtual const std::type_info& type() const = 0;
     };
 
     template <typename Object>
     struct Container : ContainerInterface {
-        Container(const Object& _data) : data(_data) {}
-        Container(Object&& _data) : data(std::forward<Object>(_data)) {}
+        explicit Container(const Object& _data) : data(_data) {}
+        explicit Container(Object&& _data) : data(std::forward<Object>(_data)) {}
         Object data;
 
-        const std::type_info& type() const override final { return typeid(data); }
+        const std::type_info& type() const final { return typeid(data); }
     };
 
     std::shared_ptr<ContainerInterface> container_;
