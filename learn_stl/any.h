@@ -60,7 +60,7 @@ class any {
     template <typename Object>
     struct Container : ContainerInterface {
         Container(const Object& _data) : data(_data) {}
-        Container(Object&& _data) : data(std::move<Object>(_data)) {}
+        Container(Object&& _data) : data(std::forward<Object>(_data)) {}
         Object data;
 
         const std::type_info& type() const override final { return typeid(data); }
@@ -72,11 +72,19 @@ class any {
 namespace detail {
 template <typename Object>
 const Object& any_cast(const any* value) {
+    if (typeid(Object) != value->type()) {
+        throw std::bad_cast();
+    }
+
     return static_cast<const any::Container<Object>&>(*value).data;
 }
 
 template <typename Object>
 Object& any_cast(any* value) {
+    if (typeid(Object) != value->type()) {
+        throw std::bad_cast();
+    }
+
     return static_cast<any::Container<Object>&>(*value).data;
 }
 }  // namespace detail

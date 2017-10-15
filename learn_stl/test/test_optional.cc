@@ -3,33 +3,12 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "helpers.h"
+
 template <typename TypeT>
 class OptionalTest : public ::testing::Test {
   public:
 };
-
-template <typename Value>
-Value generate() = delete;
-
-template <>
-double generate<double>() {
-    return 3.02;
-}
-
-template <>
-float generate<float>() {
-    return -2.3f;
-}
-
-template <>
-int generate<int>() {
-    return 2332;
-}
-
-template <>
-unsigned char generate<unsigned char>() {
-    return 'e';
-}
 
 using Types = testing::Types<double, float, int, unsigned char>;
 TYPED_TEST_CASE(OptionalTest, Types);
