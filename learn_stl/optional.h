@@ -69,7 +69,7 @@ class optional {
     template <typename... Args>
     Object& emplace(Args&&... args) {
         has_value_ = true;
-        new (&storage_) Object(args...);
+        return *new (&storage_) Object(args...);
     }
 
   private:

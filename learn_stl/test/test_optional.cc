@@ -69,7 +69,7 @@ TYPED_TEST(OptionalTest, value) {
     EXPECT_EQ(optional.value(), generate<TypeParam>());
 }
 
-TYPED_TEST(OptionalTest, constValue) {
+TYPED_TEST(OptionalTest, DISABLED_constValue) {
     using Optional = learn::optional<TypeParam>;
 
     Optional optional;
@@ -92,4 +92,11 @@ TYPED_TEST(OptionalTest, reset) {
     ASSERT_FALSE(optional.has_value());
 }
 
-TYPED_TEST(OptionalTest, emplace) {}
+TYPED_TEST(OptionalTest, emplace) {
+    using Optional = learn::optional<TypeParam>;
+
+    Optional optional;
+    optional.emplace(generate<TypeParam>());
+
+    EXPECT_EQ(optional.value(), generate<TypeParam>());
+}
