@@ -3,6 +3,9 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include <string>
+#include <vector>
+
 TEST(Tuple, Create) {
     using Tuple = learn::tuple<int, float, char>;
     ASSERT_NO_THROW({ const auto tuple = Tuple(2, 0.3f, 'a'); });
@@ -44,4 +47,24 @@ TEST(Tuple, get) {
     EXPECT_NEAR(learn::get<2>(tuple), 2.1, 1e-8);
     EXPECT_EQ(learn::get<3>(tuple), 'a');
     EXPECT_EQ(learn::get<4>(tuple), 3u);
+
+    using TupleA = learn::tuple<int, double, char, unsigned int>;
+
+    TupleA tuple_a(-3, 2.1, 'a', 3);
+
+    EXPECT_EQ(learn::get<0>(tuple_a), -3);
+    EXPECT_NEAR(learn::get<1>(tuple_a), 2.1, 1e-8);
+    EXPECT_EQ(learn::get<2>(tuple_a), 'a');
+    EXPECT_EQ(learn::get<3>(tuple_a), 3u);
+}
+
+TEST(Tuple, getConst) {
+    using Tuple = learn::tuple<std::string, std::vector<int>>;
+
+    std::vector<int> vector_data = {0, 1, 2, 3, 4};
+
+    Tuple tuple("hello world", vector_data);
+
+    EXPECT_EQ(learn::get<0>(tuple), "hello world");
+    EXPECT_EQ(learn::get<1>(tuple), vector_data);
 }

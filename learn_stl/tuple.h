@@ -6,19 +6,25 @@
 #include "utility.h"
 
 namespace learn {
-template <std::size_t I, typename Type>
-class tuple_element;
-
 namespace detail {
 template <typename Sequences, typename... Types>
 struct tuple;
 
+template <std::size_t I, typename Type>
+struct tuple_leaf {
+  public:
+    using type = Type;
+    explicit constexpr tuple_leaf(const type& value) : value_(value) {}
+    explicit constexpr tuple_leaf(Type&& value) : value_(std::move(value)) {}
+
+    Type value_;
+};
+
 template <std::size_t... Indices, typename... Types>
-struct tuple<index_sequence<Indices...>, Types...> : tuple_element<Indices, Types>... {
-    explicit constexpr tuple(const Types&... elements)
-        : tuple_element<Indices, Types>(elements)... {}
+struct tuple<index_sequence<Indices...>, Types...> : tuple_leaf<Indices, Types>... {
+    explicit constexpr tuple(const Types&... elements) : tuple_leaf<Indices, Types>(elements)... {}
     explicit constexpr tuple(Types&&... elements)
-        : tuple_element<Indices, Types>(std::forward<Types>(elements))... {}
+        : tuple_leaf<Indices, Types>(std::forward<Types>(elements))... {}
 };
 
 template <size_t I, typename Head, typename... Tail>
@@ -43,14 +49,6 @@ template <std::size_t I, typename Type>
 class tuple_element {
   public:
     using type = Type;
-    explicit constexpr tuple_element(const type& value) : value_(value) {}
-    explicit constexpr tuple_element(Type&& value) : value_(std::move(value)) {}
-
-    constexpr Type& get() { return value_; }
-    constexpr const Type& get() const { return value_; }
-
-  private:
-    Type value_;
 };
 
 template <std::size_t I, typename... Types>
@@ -82,16 +80,20 @@ template <std::size_t Index, typename... Types>
 constexpr auto& get(tuple<Types...>& data) noexcept {
     using Tuple = tuple<Types...>;
     using Type = tuple_element_t<Index, Tuple>;
-    using Element = tuple_element<Index, Type>;
-    return static_cast<Element>(data).get();
+    using Element = detail::tuple_leaf<Index, Type>;
+
+    Element& base = data;
+    return base.value_;
 };
 
 template <std::size_t Index, typename... Types>
 constexpr const auto& get(const tuple<Types...>& data) noexcept {
     using Tuple = tuple<Types...>;
     using Type = tuple_element_t<Index, Tuple>;
-    using Element = tuple_element<Index, Type>;
-    return static_cast<const Element>(data).get();
+    using Element = detail::tuple_leaf<Index, Type>;
+
+    const Element& base = data;
+    return base.value_;
 };
 
 }  // namespace learn
