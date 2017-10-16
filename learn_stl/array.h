@@ -112,4 +112,14 @@ constexpr const Type&& get(const array<Type, Size>&& data) {
     return data[I];
 }
 
+template <class Type, std::size_t Size>
+bool operator==(const array<Type, Size>& lhs, const array<Type, Size>& rhs) {
+    return std::equal(lhs.begin(), lhs.end(), rhs.begin());
+}
+
+template <class Type, std::size_t Size>
+bool operator!=(const array<Type, Size>& lhs, const array<Type, Size>& rhs) {
+    return !(lhs == rhs);
+}
+
 }  // namespace learn

@@ -4,20 +4,39 @@
 #include <typeinfo>
 
 namespace learn {
+namespace detail {
+
+struct dummy_t {};
+
+template <typename T>
+union optional_storage {
+    static_assert(std::is_trivially_destructible<T>::value, "");
+
+    dummy_t dummy_;
+    T value_;
+
+    constexpr optional_storage()  // null-state ctor
+        : dummy_{} {}
+
+    constexpr optional_storage(T const& v)  // value ctor
+        : value_{v} {}
+
+    ~optional_storage() = default;  // trivial dtor
+};
+}  // namespace detail
 
 template <typename Object>
 class optional {
   public:
     optional() : has_value_(false) {}
-    optional(Object&& object) : has_value_(true) {
-        new (&storage_) Object(std::forward<Object>(object));
-    }
 
-    optional(const Object& object) : has_value_(true) { new (&storage_) Object(object); }
+    optional(Object&& object) : has_value_(true), storage_(std::forward<Object>(object)) {}
+
+    optional(const Object& object) : has_value_(true), storage_(object) {}
 
     optional& operator=(const Object& object) {
         has_value_ = true;
-        new (&storage_) Object(object);
+        storage_ = object;
         return *this;
     }
 
@@ -28,14 +47,14 @@ class optional {
         if (!has_value_) {
             throw std::bad_cast();
         }
-        return *reinterpret_cast<Object*>(&storage_);
+        return storage_.value_;
     }
 
     const Object& value() const {
         if (!has_value_) {
             throw std::bad_cast();
         }
-        return *reinterpret_cast<const Object*>(&storage_);
+        return storage_.value_;
     }
 
     template <typename AltObject>
@@ -70,11 +89,12 @@ class optional {
     template <typename... Args>
     Object& emplace(Args&&... args) {
         has_value_ = true;
-        return *new (&storage_) Object(args...);
+        storage_ = std::move(Object(args...));
+        return storage_.value_;
     }
 
   private:
-    using Storage = std::aligned_storage<sizeof(Object)>;
+    using Storage = detail::optional_storage<Object>;
     bool has_value_;
     Storage storage_;
 };

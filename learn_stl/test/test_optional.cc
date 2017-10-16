@@ -3,6 +3,8 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include "learn_stl/array.h"
+
 #include "helpers.h"
 
 template <typename TypeT>
@@ -10,7 +12,7 @@ class OptionalTest : public ::testing::Test {
   public:
 };
 
-using Types = testing::Types<double, float, int, unsigned char>;
+using Types = testing::Types<double, float, int, unsigned char, learn::array<double, 3>>;
 TYPED_TEST_CASE(OptionalTest, Types);
 
 TYPED_TEST(OptionalTest, createEmpty) {
@@ -22,8 +24,15 @@ TYPED_TEST(OptionalTest, createEmpty) {
 TYPED_TEST(OptionalTest, createValue) {
     using Optional = learn::optional<TypeParam>;
 
-    ASSERT_NO_THROW({ Optional optional = generate<TypeParam>(); });
-    ASSERT_NO_THROW({ Optional optional(generate<TypeParam>()); });
+    ASSERT_NO_THROW({
+        Optional optional = generate<TypeParam>();
+        EXPECT_EQ(optional.value(), generate<TypeParam>());
+    });
+
+    ASSERT_NO_THROW({
+        Optional optional(generate<TypeParam>());
+        EXPECT_EQ(optional.value(), generate<TypeParam>());
+    });
 }
 
 TYPED_TEST(OptionalTest, hasValue) {
@@ -46,6 +55,16 @@ TYPED_TEST(OptionalTest, value) {
 
     optional = generate<TypeParam>();
     EXPECT_EQ(optional.value(), generate<TypeParam>());
+}
+
+TYPED_TEST(OptionalTest, copyAssign) {
+    using Optional = learn::optional<TypeParam>;
+
+    Optional optional_a = generate<TypeParam>();
+    Optional optional_b = optional_a;
+
+    EXPECT_TRUE(equal(optional_a.value(), generate<TypeParam>()));
+    EXPECT_EQ(optional_a.value(), optional_b.value());
 }
 
 TYPED_TEST(OptionalTest, constValue) {
@@ -77,9 +96,5 @@ TYPED_TEST(OptionalTest, emplace) {
     Optional optional;
     optional.emplace(generate<TypeParam>());
 
-    if (std::is_scalar_v<TypeParam>) {
-        EXPECT_NEAR(optional.value(), generate<TypeParam>(), 1E-6);
-    } else {
-        EXPECT_EQ(optional.value(), generate<TypeParam>());
-    }
+    EXPECT_TRUE(equal(optional.value(), generate<TypeParam>()));
 }
