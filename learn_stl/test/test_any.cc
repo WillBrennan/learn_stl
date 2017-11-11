@@ -22,8 +22,8 @@ TYPED_TEST_CASE(AnyTest, Types);
 TYPED_TEST(AnyTest, construction) {
     using learn::any;
 
-    ASSERT_NO_THROW({ any any_value(generate<TypeParam>()); });
-    ASSERT_NO_THROW({ any any_value = generate<TypeParam>(); });
+    ASSERT_NO_THROW({ any any_value(helpers::generate<TypeParam>()); });
+    ASSERT_NO_THROW({ any any_value = helpers::generate<TypeParam>(); });
 }
 
 TYPED_TEST(AnyTest, has_value) {
@@ -32,7 +32,7 @@ TYPED_TEST(AnyTest, has_value) {
     any any_value;
     EXPECT_FALSE(any_value.has_value());
 
-    any_value = generate<TypeParam>();
+    any_value = helpers::generate<TypeParam>();
     EXPECT_TRUE(any_value.has_value());
 }
 
@@ -42,7 +42,7 @@ TYPED_TEST(AnyTest, emplace) {
     ASSERT_NO_THROW({
         any any_value;
 
-        any_value.emplace<TypeParam>(generate<TypeParam>());
+        any_value.emplace<TypeParam>(helpers::generate<TypeParam>());
         EXPECT_TRUE(any_value.has_value());
     });
 }
@@ -50,7 +50,7 @@ TYPED_TEST(AnyTest, emplace) {
 TYPED_TEST(AnyTest, reset) {
     using learn::any;
 
-    any any_value = generate<TypeParam>();
+    any any_value = helpers::generate<TypeParam>();
     EXPECT_TRUE(any_value.has_value());
 
     any_value.reset();
@@ -61,7 +61,7 @@ TYPED_TEST(AnyTest, swap) {
     using learn::any;
     using learn::swap;
 
-    any any_value0 = generate<TypeParam>();
+    any any_value0 = helpers::generate<TypeParam>();
     any any_value1;
 
     any_value0.swap(any_value1);
@@ -80,15 +80,15 @@ TYPED_TEST(AnyTest, type) {
     any value;
     EXPECT_EQ(value.type(), typeid(void));
 
-    value.emplace<TypeParam>(generate<TypeParam>());
+    value.emplace<TypeParam>(helpers::generate<TypeParam>());
     EXPECT_EQ(value.type(), typeid(TypeParam));
 }
 
 TYPED_TEST(AnyTest, any_cast) {
     using learn::any;
 
-    any value = generate<TypeParam>();
+    any value = helpers::generate<TypeParam>();
     const auto recovered_value = learn::any_cast<TypeParam>(value);
 
-    EXPECT_EQ(recovered_value, generate<TypeParam>());
+    EXPECT_EQ(recovered_value, helpers::generate<TypeParam>());
 }

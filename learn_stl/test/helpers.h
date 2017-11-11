@@ -2,6 +2,7 @@
 
 #include "learn_stl/array.h"
 
+namespace helpers {
 template <typename Value>
 Value generate() = delete;
 
@@ -38,3 +39,5 @@ bool equal<unsigned char>(const unsigned char& lhs, const unsigned char& rhs);
 template <>
 bool equal<learn::array<double, 3>>(const learn::array<double, 3>& lhs,
                                     const learn::array<double, 3>& rhs);
+
+}  // namespace helpers

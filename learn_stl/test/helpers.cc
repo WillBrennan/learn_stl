@@ -3,7 +3,7 @@
 #include <cmath>
 
 #include "learn_stl/array.h"
-
+namespace helpers {
 template <>
 double generate<double>() {
     return 3.02;
@@ -60,3 +60,5 @@ bool equal<learn::array<double, 3>>(const learn::array<double, 3>& lhs,
 
     return true;
 }
+
+}  // namespace helpers

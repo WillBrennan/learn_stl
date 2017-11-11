@@ -25,13 +25,13 @@ TYPED_TEST(OptionalTest, createValue) {
     using Optional = learn::optional<TypeParam>;
 
     ASSERT_NO_THROW({
-        Optional optional = generate<TypeParam>();
-        EXPECT_EQ(optional.value(), generate<TypeParam>());
+        Optional optional = helpers::generate<TypeParam>();
+        EXPECT_EQ(optional.value(), helpers::generate<TypeParam>());
     });
 
     ASSERT_NO_THROW({
-        Optional optional(generate<TypeParam>());
-        EXPECT_EQ(optional.value(), generate<TypeParam>());
+        Optional optional(helpers::generate<TypeParam>());
+        EXPECT_EQ(optional.value(), helpers::generate<TypeParam>());
     });
 }
 
@@ -42,7 +42,7 @@ TYPED_TEST(OptionalTest, hasValue) {
     ASSERT_FALSE(optional.has_value());
     ASSERT_FALSE(bool(optional));
 
-    optional = generate<TypeParam>();
+    optional = helpers::generate<TypeParam>();
     ASSERT_TRUE(optional.has_value());
     ASSERT_TRUE(bool(optional));
 }
@@ -53,17 +53,17 @@ TYPED_TEST(OptionalTest, value) {
     Optional optional;
     ASSERT_THROW({ optional.value(); }, std::bad_cast);
 
-    optional = generate<TypeParam>();
-    EXPECT_EQ(optional.value(), generate<TypeParam>());
+    optional = helpers::generate<TypeParam>();
+    EXPECT_EQ(optional.value(), helpers::generate<TypeParam>());
 }
 
 TYPED_TEST(OptionalTest, copyAssign) {
     using Optional = learn::optional<TypeParam>;
 
-    Optional optional_a = generate<TypeParam>();
+    Optional optional_a = helpers::generate<TypeParam>();
     Optional optional_b = optional_a;
 
-    EXPECT_TRUE(equal(optional_a.value(), generate<TypeParam>()));
+    EXPECT_TRUE(helpers::equal(optional_a.value(), helpers::generate<TypeParam>()));
     EXPECT_EQ(optional_a.value(), optional_b.value());
 }
 
@@ -73,9 +73,9 @@ TYPED_TEST(OptionalTest, constValue) {
     Optional optional;
     ASSERT_THROW({ optional.value(); }, std::bad_cast);
 
-    optional = generate<TypeParam>();
+    optional = helpers::generate<TypeParam>();
     const auto const_optional = optional;
-    EXPECT_EQ(const_optional.value(), generate<TypeParam>());
+    EXPECT_EQ(const_optional.value(), helpers::generate<TypeParam>());
 }
 
 TYPED_TEST(OptionalTest, swap) {}
@@ -83,7 +83,7 @@ TYPED_TEST(OptionalTest, swap) {}
 TYPED_TEST(OptionalTest, reset) {
     using Optional = learn::optional<TypeParam>;
 
-    Optional optional = generate<TypeParam>();
+    Optional optional = helpers::generate<TypeParam>();
     ASSERT_TRUE(optional.has_value());
 
     ASSERT_NO_THROW({ optional.reset(); });
@@ -94,7 +94,7 @@ TYPED_TEST(OptionalTest, emplace) {
     using Optional = learn::optional<TypeParam>;
 
     Optional optional;
-    optional.emplace(generate<TypeParam>());
+    optional.emplace(helpers::generate<TypeParam>());
 
-    EXPECT_TRUE(equal(optional.value(), generate<TypeParam>()));
+    EXPECT_TRUE(helpers::equal(optional.value(), helpers::generate<TypeParam>()));
 }
