@@ -39,20 +39,23 @@ class unique_ptr {
             deleter_type()(pointer_);
         }
 
-        if (ptr) {
-            pointer_ = ptr;
-        }
+        pointer_ = ptr;
     }
 
     ~unique_ptr() { reset(); }
 
     pointer operator->() const noexcept { return pointer_; }
-    typename std::add_lvalue_reference<T>::type operator*() const { return pointer_; }
+    typename std::add_lvalue_reference<T>::type operator*() const { return *pointer_; }
 
     explicit operator bool() const noexcept { return bool(pointer_); }
 
   private:
     pointer pointer_;
 };
+
+template <typename Value, class Deleter = default_delete<Value>, typename... Args>
+unique_ptr<Value, Deleter> make_unique(Args&&... args) {
+    return unique_ptr<Value, Deleter>(new Value(std::forward<Args>(args)...));
+}
 
 }  // namespace learn
