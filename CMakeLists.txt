@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.9.4)
 project(learn_stl)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -17,7 +17,7 @@ link_directories(/usr/local/lib/)
 file(GLOB   test_cxx_source_files           ${PROJECT_SOURCE_DIR}/learn_stl/test/*.cc)
 add_executable(test_learn_stl               ${test_cxx_source_files})
 target_include_directories(test_learn_stl   PUBLIC ${GTEST_INCLUDE_DIRS})
-target_link_libraries(test_learn_stl        gtest_main gtest gmock)
+target_link_libraries(test_learn_stl        ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 add_test(test_learn_stl     test_learn_stl)
 
 enable_testing()
