@@ -16,4 +16,7 @@ TEST(valarray, Addition) {
     valarray val_b(0.232, 20);
 
     const valarray result = val_a + val_b;
-} 
+
+    valarray val_expt(0.35 + 0.232, 20);
+    EXPECT_EQ(result, val_expt);
+}

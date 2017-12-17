@@ -96,6 +96,10 @@ class valarray : public detail::expression<valarray<ValueT>> {
   public:
     using value_type = double;
     using size_type = std::size_t;
+    using reference = value_type&;
+    using const_reference = const value_type&;
+    using iterator = typename std::vector<value_type>::iterator;
+    using const_iterator = typename std::vector<value_type>::const_iterator;
 
     valarray() = default;
     explicit valarray(size_type count) : data_(count) {}
@@ -105,14 +109,30 @@ class valarray : public detail::expression<valarray<ValueT>> {
     valarray(const detail::expression<Expr>& expression) {
         data_.reserve(expression.size());
 
-        for (size_type i = 0; i < expression.size(); ++i) {
+        for (size_type i = 0; i != expression.size(); ++i) {
             data_.emplace_back(expression[i]);
         }
     }
+
+    size_type size() const { return data_.size(); }
+
+    reference operator[](const size_type index) { return data_[index]; }
+    const_reference operator[](const size_type index) const { return data_[index]; }
+
+    iterator begin() { return data_.begin(); }
+    iterator end() { return data_.end(); }
+
+    const_iterator begin() const { return data_.begin(); }
+    const_iterator end() const { return data_.end(); }
 
   private:
     using Storage = std::vector<value_type>;
     Storage data_;
 };
+
+template <typename Value>
+bool operator==(const valarray<Value>& lhs, const valarray<Value>& rhs) {
+    return std::equal(lhs.begin(), lhs.end(), rhs.begin());
+}
 
 }  // namespace learn
