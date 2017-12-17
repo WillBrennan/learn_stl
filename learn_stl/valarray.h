@@ -1,3 +1,7 @@
+#pragma once
+
+#include <cmath>
+
 #include <functional>
 #include <vector>
 
@@ -58,36 +62,26 @@ class binary_op : public expression<binary_op<LhsT, RhsT, Op>> {
 
 template <typename Lhs, typename Rhs>
 auto operator+(const Lhs& lhs, const Rhs& rhs) {
-    static_assert(std::is_same<typename Lhs::value_type, typename Rhs::value_type>::value,
-                  "requires same types!");
     return detail::binary_op<Lhs, Rhs, std::plus<typename Lhs::value_type>>(lhs, rhs);
 }
 
 template <typename Lhs, typename Rhs>
 auto operator-(const Lhs& lhs, const Rhs& rhs) {
-    static_assert(std::is_same<typename Lhs::value_type, typename Rhs::value_type>::value,
-                  "requires same types!");
     return detail::binary_op<Lhs, Rhs, std::minus<typename Lhs::value_type>>(lhs, rhs);
 }
 
 template <typename Lhs, typename Rhs>
 auto operator*(const Lhs& lhs, const Rhs& rhs) {
-    static_assert(std::is_same<typename Lhs::value_type, typename Rhs::value_type>::value,
-                  "requires same types!");
     return detail::binary_op<Lhs, Rhs, std::multiplies<typename Lhs::value_type>>(lhs, rhs);
 }
 
 template <typename Lhs, typename Rhs>
 auto operator/(const Lhs& lhs, const Rhs& rhs) {
-    static_assert(std::is_same<typename Lhs::value_type, typename Rhs::value_type>::value,
-                  "requires same types!");
     return detail::binary_op<Lhs, Rhs, std::divides<typename Lhs::value_type>>(lhs, rhs);
 }
 
 template <typename Lhs, typename Rhs>
 auto operator%(const Lhs& lhs, const Rhs& rhs) {
-    static_assert(std::is_same<typename Lhs::value_type, typename Rhs::value_type>::value,
-                  "requires same types!");
     return detail::binary_op<Lhs, Rhs, std::modulus<typename Lhs::value_type>>(lhs, rhs);
 }
 
