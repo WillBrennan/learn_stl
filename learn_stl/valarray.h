@@ -7,11 +7,11 @@
 
 namespace learn {
 namespace detail {
-template <typename ObjectT>
+template <typename ObjectT, typename ValueT>
 class expression {
   public:
     using object = typename std::decay<ObjectT>::type;
-    using value_type = double;
+    using value_type = ValueT;
     using size_type = std::size_t;
 
     value_type operator[](const size_type index) const {
@@ -24,7 +24,7 @@ class expression {
 };
 
 template <class Op, class ArgT>
-class unary_op : public expression<unary_op<Op, ArgT>> {
+class unary_op : public expression<unary_op<Op, ArgT>, typename ArgT::value_type> {
   public:
     using Arg = typename std::decay<ArgT>::type;
     using size_type = std::size_t;
@@ -40,7 +40,7 @@ class unary_op : public expression<unary_op<Op, ArgT>> {
 };
 
 template <class LhsT, class RhsT, class Op>
-class binary_op : public expression<binary_op<LhsT, RhsT, Op>> {
+class binary_op : public expression<binary_op<LhsT, RhsT, Op>, typename LhsT::value_type> {
   public:
     using Lhs = typename std::decay<LhsT>::type;
     using Rhs = typename std::decay<RhsT>::type;
@@ -86,9 +86,9 @@ auto operator%(const Lhs& lhs, const Rhs& rhs) {
 }
 
 template <typename ValueT>
-class valarray : public detail::expression<valarray<ValueT>> {
+class valarray : public detail::expression<valarray<ValueT>, ValueT> {
   public:
-    using value_type = double;
+    using value_type = ValueT;
     using size_type = std::size_t;
     using reference = value_type&;
     using const_reference = const value_type&;
@@ -100,7 +100,7 @@ class valarray : public detail::expression<valarray<ValueT>> {
     valarray(const value_type& value, std::size_t count) : data_(count, value) {}
 
     template <typename Expr>
-    valarray(const detail::expression<Expr>& expression) {
+    valarray(const detail::expression<Expr, ValueT>& expression) {
         data_.reserve(expression.size());
 
         for (size_type i = 0; i != expression.size(); ++i) {
