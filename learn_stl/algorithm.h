@@ -283,4 +283,11 @@ inline Iterator search_n(Iterator first, Iterator last, Size count, const T& val
     return search_n(first, last, count, std::equal_to<Value>());
 }
 
+template <typename Iterator>
+inline void reverse(Iterator first, Iterator last) {
+    while (first != last && first != --last) {
+        std::swap(*first++, *last);
+    }
+}
+
 }  // namespace learn
