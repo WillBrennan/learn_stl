@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(GTest      REQUIRED)
 find_package(Threads    REQUIRED)
 
+include(cmake/sanitizers.cmake)
+
 set(include_paths   ${PROJECT_SOURCE_DIR})
 include_directories(${include_paths})
 
