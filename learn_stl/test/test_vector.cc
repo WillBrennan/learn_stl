@@ -65,6 +65,32 @@ TEST(Vector, AtOutOfBounds) {
     ASSERT_THROW({ vector.at(1); }, std::out_of_range);
 }
 
+TEST(Vector, Front) {
+    using Vector = learn::vector<double>;
+
+    Vector vector;
+    vector.emplace_back(0.23);
+
+    ASSERT_EQ(vector.front(), 0.23);
+
+    vector.emplace_back(12.11);
+
+    ASSERT_EQ(vector.front(), 0.23);
+}
+
+TEST(Vector, Back) {
+    using Vector = learn::vector<double>;
+
+    Vector vector;
+    vector.emplace_back(0.23);
+
+    ASSERT_EQ(vector.back(), 0.23);
+
+    vector.emplace_back(12.11);
+
+    ASSERT_EQ(vector.back(), 12.11);
+}
+
 TEST(Vector, Data) {
     using Vector = learn::vector<double>;
     using learn::addressof;
