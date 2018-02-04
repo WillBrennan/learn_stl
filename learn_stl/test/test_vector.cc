@@ -102,3 +102,16 @@ TEST(Vector, Data) {
 
     ASSERT_EQ(vector.data(), addressof(vector.at(0)));
 }
+
+TEST(Vector, Reserve) {
+    using Vector = learn::vector<double>;
+
+    Vector vector;
+    ASSERT_EQ(vector.capacity(), 0);
+
+    vector.emplace_back(1.02);
+    ASSERT_GE(vector.capacity(), 1);
+
+    vector.reserve(100);
+    ASSERT_EQ(vector.capacity(), 100);
+}

@@ -76,12 +76,14 @@ class vector {
     size_type capacity() const { return capacity_; }
     size_type max_size() const;
 
+    void reserve(size_type new_capacity);
+
     // modifiers
 
     template <class... Args>
     reference emplace_back(Args&&... args) {
         if (size_ == capacity_) {
-            grow(recommend(size_));
+            reserve(recommend(size_));
         }
 
         AllocatorTraits::construct(allocator_, begin_ + size_, std::forward<Args>(args)...);
@@ -103,18 +105,6 @@ class vector {
     size_type capacity_ = 0;
 
     size_type recommend(const size_type& size) const;
-
-    void grow(const size_type& new_capacity) {
-        const auto new_begin = AllocatorTraits::allocate(allocator_, new_capacity);
-
-        if (begin_) {
-            std::memmove(new_begin, begin_, size_ * sizeof(value_type));
-            AllocatorTraits::deallocate(allocator_, begin_, capacity_);
-        }
-
-        begin_ = new_begin;
-        capacity_ = new_capacity;
-    }
 };
 
 template <typename Value, class Allocator>
@@ -124,6 +114,22 @@ typename vector<Value, Allocator>::size_type vector<Value, Allocator>::max_size(
 
     return std::min<size_type>(max_size, max_numeric);
 }
+
+template <typename Value, class Allocator>
+void vector<Value, Allocator>::reserve(size_type new_capacity) {
+    if (new_capacity <= capacity_) {
+        return;
+    }
+
+    const auto new_begin = AllocatorTraits::allocate(allocator_, new_capacity);
+    if (begin_) {
+        std::memmove(new_begin, begin_, size_ * sizeof(value_type));
+        AllocatorTraits::deallocate(allocator_, begin_, capacity_);
+    }
+
+    begin_ = new_begin;
+    capacity_ = new_capacity;
+};
 
 template <typename Value, class Allocator>
 typename vector<Value, Allocator>::size_type vector<Value, Allocator>::recommend(
