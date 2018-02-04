@@ -32,8 +32,7 @@ class vector {
         }
     }
 
-    reference operator[](size_type index) { return *(begin() + index); }
-    const_reference operator[](size_type index) const { return *(begin() + index); }
+    // element access
 
     reference at(size_type index) {
         if (index >= size()) {
@@ -51,12 +50,19 @@ class vector {
         return operator[](index);
     }
 
-    size_type size() const { return size_; }
-    size_type capacity() const { return capacity_; }
-    size_type max_size() const;
+    reference operator[](size_type index) { return *(begin() + index); }
+    const_reference operator[](size_type index) const { return *(begin() + index); }
+
+    reference front() { return *begin_; }
+    const_reference front() const { return *begin_; }
+
+    reference back() { return *(begin_ + (size() - 1)); }
+    const_reference back() const { return *(begin_ + (size() - 1)); }
 
     pointer data() { return begin_; }
     const_pointer data() const { return begin_; }
+
+    // iterators
 
     iterator begin() { return begin_; }
     iterator end() { return begin() + size(); }
@@ -64,11 +70,13 @@ class vector {
     const_iterator begin() const { return begin_; }
     const_iterator end() const { return begin() + size(); }
 
-    reference front() { return *begin_; }
-    const_reference front() const { return *begin_; }
+    // capacity
 
-    reference back() { return *(begin_ + (size() - 1)); }
-    const_reference back() const { return *(begin_ + (size() - 1)); }
+    size_type size() const { return size_; }
+    size_type capacity() const { return capacity_; }
+    size_type max_size() const;
+
+    // modifiers
 
     template <class... Args>
     reference emplace_back(Args&&... args) {
