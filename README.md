@@ -10,8 +10,10 @@ The standard library heavily relies on many [C++ Idioms](https://en.wikibooks.or
 Any is the de-facto type-erasure method in C++, it provides type-safe container for single values of any type. The implementation provides an introduction to polymorphism in C++.
 
 #### `optional`
+How can you store an object without a default-constructor on the stack? Well with a `union` is how, but what is this weird special type.
 
 #### `variant`
+
 
 #### `tuple`
 Tuple heavily depends on variadic templates and `std::index_sequence`, and isn't obvious how its implemented. It's a refreshing look at 
@@ -23,7 +25,7 @@ Array is deceptively simple, but how are its constructors and destructors implic
 Understanding Array requires a strong comprehension of these often over-looked language features.
 
 #### `vector`
-Everyone knows `std::vector` right? But why is reserving so important? And what is `std::allocator`? 
+Everyone knows `std::vector` right? But why is reserving so important? And what is `std::allocator` and why wrap it in `std::allocator_traits`?
 
 #### `valarray`
 `valarray` provides an introduction to expression-templates. It stores elements in a vector, and it provides element-wise unary and binary operations. It won't create any temporaries and will only perform one iteration as it evaluates the expression for each resultant element.
