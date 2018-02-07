@@ -62,21 +62,19 @@ std::pair<typename Unordered<ObjectT, HashT, EqualT, AllocatorT>::Iterator, bool
 Unordered<ObjectT, HashT, EqualT, AllocatorT>::emplace(Args&&... args) {
     Object object(args...);
 
-    const auto bin_index = Hash()(object) % bins_.size();
+    const auto bin_index = hash_(object) % bins_.size();
     auto& bin = bins_[bin_index];
 
-    Iterator iterator = bin.front;
-    bool inserted = false;
-
-    for (auto iterator = bin.front; iterator != bin.end; ++iterator) {
-        if (Equal()(*iterator, object)) {
+    for (auto iterator = bin.front; iterator != bin.end; std::next(iterator)) {
+        if (equal_(*iterator, object)) {
             return std::make_pair(iterator, false);
         }
     }
 
-    bin.end = std::next(list_.insert_after(bin.end, std::move(object)));
+    auto iterator = list_.insert_after(bin.end, std::move(object));
+    bin.end = std::next(iterator);
 
-    return std::make_pair(list_.end(), false);
+    return std::make_pair(iterator, true);
 }
 
 }  // namespace detail
