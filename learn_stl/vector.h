@@ -149,7 +149,7 @@ typename vector<Value, Allocator>::size_type vector<Value, Allocator>::recommend
 
     const auto new_capacity = std::max(size_type(5), 3 * size / 2);
 
-    return std::max(std::min(new_capacity, max_allowed), size);
+    return std::clamp(new_capacity, size, max_allowed);
 }
 
 template <typename Value, class Allocator>
