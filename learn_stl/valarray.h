@@ -3,7 +3,8 @@
 #include <cmath>
 
 #include <functional>
-#include <vector>
+
+#include "vector.h"
 
 namespace learn {
 namespace detail {
@@ -92,8 +93,8 @@ class valarray : public detail::expression<valarray<ValueT>, ValueT> {
     using size_type = std::size_t;
     using reference = value_type&;
     using const_reference = const value_type&;
-    using iterator = typename std::vector<value_type>::iterator;
-    using const_iterator = typename std::vector<value_type>::const_iterator;
+    using iterator = typename vector<value_type>::iterator;
+    using const_iterator = typename vector<value_type>::const_iterator;
 
     valarray() = default;
     explicit valarray(size_type count) : data_(count) {}
@@ -120,7 +121,7 @@ class valarray : public detail::expression<valarray<ValueT>, ValueT> {
     const_iterator end() const { return data_.end(); }
 
   private:
-    using Storage = std::vector<value_type>;
+    using Storage = vector<value_type>;
     Storage data_;
 };
 

@@ -12,6 +12,15 @@ TEST(Vector, DefaultConstruct) {
     Vector vector;
 }
 
+TEST(Vector, CountValueConstructor) {
+    using Vector = learn::vector<int>;
+
+    Vector vector(30, 2321);
+
+    ASSERT_THAT(vector, testing::SizeIs(30));
+    EXPECT_THAT(vector, testing::Contains(2321));
+}
+
 TEST(Vector, Size) {
     using Vector = learn::vector<double>;
 

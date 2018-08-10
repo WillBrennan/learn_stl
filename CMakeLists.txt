@@ -9,17 +9,12 @@ find_package(Threads    REQUIRED)
 include(cmake/sanitizers.cmake)
 
 set(include_paths   ${PROJECT_SOURCE_DIR})
-include_directories(${include_paths})
-
 link_directories(/usr/local/lib/)
-
-#   file(GLOB   learn_stl_cxx          ${PROJECT_SOURCE_DIR}/learn_stl/*.cc)
-#   add_library(learn_stl   ${learn_stl_cxx})
 
 file(GLOB   test_cxx_source_files           ${PROJECT_SOURCE_DIR}/learn_stl/test/*.cc)
 add_executable(test_learn_stl               ${test_cxx_source_files})
-target_include_directories(test_learn_stl   PUBLIC ${GTEST_INCLUDE_DIRS})
-target_link_libraries(test_learn_stl        ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_include_directories(test_learn_stl   PUBLIC ${GTEST_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR})
+target_link_libraries(test_learn_stl        gtest gmock gtest_main ${CMAKE_THREAD_LIBS_INIT})
 add_test(test_learn_stl     test_learn_stl)
 
 enable_testing()

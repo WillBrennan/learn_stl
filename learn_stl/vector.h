@@ -25,6 +25,15 @@ class vector {
     vector() noexcept(noexcept(allocator())) : vector(allocator()) {}
     explicit vector(const allocator& new_allocator) noexcept : allocator_(new_allocator) {}
 
+    vector(size_type count, const value_type& value, const allocator& alloc = allocator())
+        : allocator_(alloc) {
+        reserve(count);
+
+        for (size_type i = 0; i < count; ++i) {
+            emplace_back(value);
+        }
+    }
+
     ~vector() {
         if (begin_) {
             clear();
