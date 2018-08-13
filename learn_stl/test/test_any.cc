@@ -84,11 +84,104 @@ TYPED_TEST(AnyTest, type) {
     EXPECT_EQ(value.type(), typeid(TypeParam));
 }
 
-TYPED_TEST(AnyTest, any_cast) {
+TYPED_TEST(AnyTest, AnyCastPtr) {
+    using learn::any;
+    using learn::any_cast;
+
+    const auto actual_value = helpers::generate<TypeParam>();
+    any value = actual_value;
+
+    const auto value_ptr = any_cast<TypeParam>(&value);
+
+    ASSERT_TRUE(value_ptr);
+    ASSERT_EQ(*value_ptr, actual_value);
+}
+
+TYPED_TEST(AnyTest, AnyCastPtrBad) {
+    using learn::any;
+    using learn::any_cast;
+
+    const auto actual_value = helpers::generate<TypeParam>();
+    any value = actual_value;
+
+    const auto value_ptr = any_cast<char>(&value);
+
+    ASSERT_FALSE(value_ptr);
+}
+
+TYPED_TEST(AnyTest, ConstAnyCastPtr) {
+    using learn::any;
+    using learn::any_cast;
+
+    const auto actual_value = helpers::generate<TypeParam>();
+    const any value = actual_value;
+
+    const auto value_ptr = any_cast<TypeParam>(&value);
+
+    ASSERT_TRUE(value_ptr);
+    ASSERT_EQ(*value_ptr, actual_value);
+}
+
+TYPED_TEST(AnyTest, ConstAnyCastPtrBad) {
+    using learn::any;
+    using learn::any_cast;
+
+    const auto actual_value = helpers::generate<TypeParam>();
+    any value = actual_value;
+
+    const auto value_ptr = any_cast<char>(&value);
+
+    ASSERT_FALSE(value_ptr);
+}
+
+TYPED_TEST(AnyTest, AnyCastRef) {
     using learn::any;
 
     any value = helpers::generate<TypeParam>();
     const auto recovered_value = learn::any_cast<TypeParam>(value);
 
     EXPECT_EQ(recovered_value, helpers::generate<TypeParam>());
+}
+
+TYPED_TEST(AnyTest, AnyCastRefBad) {
+    using learn::any;
+
+    any value = helpers::generate<TypeParam>();
+
+    ASSERT_THROW({ const auto recovered_value = learn::any_cast<char>(value); }, std::bad_cast);
+}
+
+TYPED_TEST(AnyTest, ConstAnyCastRef) {
+    using learn::any;
+
+    const any value = helpers::generate<TypeParam>();
+    const auto recovered_value = learn::any_cast<TypeParam>(value);
+
+    EXPECT_EQ(recovered_value, helpers::generate<TypeParam>());
+}
+
+TYPED_TEST(AnyTest, ConstAnyCastRefBad) {
+    using learn::any;
+
+    const any value = helpers::generate<TypeParam>();
+
+    ASSERT_THROW({ const auto recovered_value = learn::any_cast<char>(value); }, std::bad_cast);
+}
+
+TYPED_TEST(AnyTest, MoveAnyCast) {
+    using learn::any;
+
+    const any value = helpers::generate<TypeParam>();
+    const auto recovered_value = learn::any_cast<TypeParam>(std::move(value));
+
+    EXPECT_EQ(recovered_value, helpers::generate<TypeParam>());
+}
+
+TYPED_TEST(AnyTest, MoveAnyCastBad) {
+    using learn::any;
+
+    const any value = helpers::generate<TypeParam>();
+
+    ASSERT_THROW({ const auto recovered_value = learn::any_cast<char>(std::move(value)); },
+                 std::bad_cast);
 }
