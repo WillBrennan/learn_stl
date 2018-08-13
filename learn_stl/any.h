@@ -4,16 +4,9 @@
 #include <type_traits>
 #include <utility>
 
+#include "memory.h"
+
 namespace learn {
-class any;
-namespace detail {
-template <typename Object>
-const Object& any_cast(const any* value);
-
-template <typename Object>
-Object& any_cast(any* value);
-
-}  // namespace detail
 class any {
   public:
     any() = default;
@@ -46,10 +39,10 @@ class any {
     }
 
     template <typename Object>
-    friend const Object& detail::any_cast(const any* value);
+    friend const Object* any_cast(const any* value);
 
     template <typename Object>
-    friend Object& detail::any_cast(any* value);
+    friend Object* any_cast(any* value);
 
   private:
     struct ContainerInterface {
@@ -69,34 +62,50 @@ class any {
     std::shared_ptr<ContainerInterface> container_;
 };
 
-namespace detail {
 template <typename Object>
-const Object& any_cast(const any* value) {
-    if (typeid(Object) != value->type()) {
+const Object* any_cast(const any* value) {
+    auto container_ptr = dynamic_cast<const any::Container<Object>*>(value->container_.get());
+
+    return container_ptr ? addressof(container_ptr->data) : nullptr;
+}
+
+template <typename Object>
+Object* any_cast(any* value) {
+    auto container_ptr = dynamic_cast<any::Container<Object>*>(value->container_.get());
+    return container_ptr ? addressof(container_ptr->data) : nullptr;
+}
+
+template <typename Object>
+Object any_cast(const any& value) {
+    const auto value_ptr = any_cast<Object>(&value);
+
+    if (!value_ptr) {
         throw std::bad_cast();
     }
 
-    return static_cast<const any::Container<Object>&>(*value->container_).data;
+    return *value_ptr;
 }
 
 template <typename Object>
-Object& any_cast(any* value) {
-    if (typeid(Object) != value->type()) {
+Object any_cast(any& value) {
+    const auto value_ptr = any_cast<Object>(&value);
+
+    if (!value_ptr) {
         throw std::bad_cast();
     }
 
-    return static_cast<any::Container<Object>&>(*value->container_).data;
-}
-}  // namespace detail
-
-template <typename Object>
-const Object& any_cast(const any& value) {
-    return detail::any_cast<Object>(&value);
+    return *value_ptr;
 }
 
 template <typename Object>
-Object& any_cast(any& value) {
-    return detail::any_cast<Object>(&value);
+Object any_cast(any&& value) {
+    const auto value_ptr = any_cast<Object>(&value);
+
+    if (!value_ptr) {
+        throw std::bad_cast();
+    }
+
+    return std::move(*value_ptr);
 }
 
 void swap(any& lhs, any& rhs) { lhs.swap(rhs); }
