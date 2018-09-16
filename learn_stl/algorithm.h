@@ -6,6 +6,8 @@
 #include <iterator>
 
 namespace learn {
+// ------------------------------------------------------------------------------------
+// non-modifying algorithms
 
 template <typename Iterator, typename UnaryPredicate>
 inline bool all_of(Iterator first, Iterator last, UnaryPredicate fn) {
@@ -283,11 +285,56 @@ inline Iterator search_n(Iterator first, Iterator last, Size count, const T& val
     return search_n(first, last, count, std::equal_to<Value>());
 }
 
+// ------------------------------------------------------------------------------------
+// modifying
+
+template <class T>
+constexpr void swap(T& a, T& b) {
+    T c = std::move(a);
+    a = std::move(b);
+    b = std::move(c);
+}
+
 template <typename Iterator>
 inline void reverse(Iterator first, Iterator last) {
     while (first != last && first != --last) {
-        std::swap(*first++, *last);
+        swap(*first++, *last);
     }
 }
 
+template <class ForwardItA, class ForwardItB>
+constexpr void iter_swap(ForwardItA a, ForwardItB b) {
+    swap(*a, *b);
+}
+
+template <class Iterator>
+Iterator rotate(Iterator first, Iterator new_first, Iterator last) {
+    if (first == new_first) {
+        return last;
+    }
+
+    if (new_first == last) {
+        return first;
+    }
+
+    for (Iterator next = new_first; next != last;) {
+        iter_swap(first++, next++);
+        if (first == new_first) {
+            new_first = next;
+        }
+    }
+
+    Iterator result = first;
+
+    for (Iterator next = new_first; next != last;) {
+        iter_swap(first++, next++);
+        if (first == new_first) {
+            new_first = next;
+        } else if (next == last) {
+            next = new_first;
+        }
+    }
+
+    return result;
+}
 }  // namespace learn

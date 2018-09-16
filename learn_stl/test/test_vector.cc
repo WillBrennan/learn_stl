@@ -124,3 +124,41 @@ TEST(Vector, Reserve) {
     vector.reserve(100);
     ASSERT_EQ(vector.capacity(), 100);
 }
+
+TEST(Vector, Erase) {
+    using Vector = learn::vector<double>;
+
+    Vector vector;
+    vector.emplace_back(1.0);
+    vector.emplace_back(1.5);
+    vector.emplace_back(2.0);
+    vector.emplace_back(3.0);
+    vector.emplace_back(3.2);
+
+    ASSERT_EQ(vector.size(), 5);
+
+    vector.erase(vector.begin() + 2, vector.begin() + 4);
+
+    ASSERT_EQ(vector.size(), 3);
+
+    ASSERT_THAT(vector, testing::ElementsAre(1.0, 1.5, 3.2));
+}
+
+TEST(Vector, EraseSingle) {
+    using Vector = learn::vector<double>;
+
+    Vector vector;
+    vector.emplace_back(1.0);
+    vector.emplace_back(1.5);
+    vector.emplace_back(2.0);
+    vector.emplace_back(3.0);
+    vector.emplace_back(3.2);
+
+    ASSERT_EQ(vector.size(), 5);
+
+    vector.erase(vector.begin() + 0);
+
+    ASSERT_EQ(vector.size(), 4);
+
+    ASSERT_THAT(vector, testing::ElementsAre(1.5, 2.0, 3.0, 3.2));
+}
