@@ -1,10 +1,11 @@
 #pragma once
 
-#include <memory>
+#include <functional>
 #include <type_traits>
+#include <typeinfo>
 #include <utility>
 
-#include "memory.h"
+#include "learn_stl/memory.h"
 
 namespace learn {
 class any {
@@ -12,18 +13,30 @@ class any {
     any() = default;
 
     template <typename Object>
-    any(const Object& object)
-        : container_(std::make_shared<Container<std::decay_t<Object>>>(object)) {}
+    any(const Object& object) : container_(Container<std::decay_t<Object>>::make(object)) {}
 
     template <typename Object>
     any(Object&& object)
-        : container_(
-              std::make_shared<Container<std::decay_t<Object>>>(std::forward<Object>(object))) {}
+        : container_(Container<std::decay_t<Object>>::make(std::forward<Object>(object))) {}
+
+    any(const any& other) : container_(other.container_->copy()) {}
+    any(any&& other) : container_(std::move(other.container_)) { other.reset(); }
+
+    any& operator=(const any& other) {
+        container_ = other.container_->copy();
+        return *this;
+    }
+
+    any& operator=(any&& other) {
+        container_ = std::move(other.container_);
+        other.reset();
+        return *this;
+    }
 
     template <typename Object, typename... Args>
-    std::decay_t<Object>& emplace(Args&&... args) {
-        container_ = std::make_shared<Container<Object>>(std::forward<Args>(args)...);
-        return static_cast<any::Container<Object>&>(*container_).data;
+    auto& emplace(Args&&... args) {
+        container_ = Container<Object>::make(std::forward<Args>(args)...);
+        return static_cast<Container<Object>&>(*container_).data;
     }
 
     void reset() noexcept { container_.reset(); }
@@ -45,21 +58,42 @@ class any {
     friend Object* any_cast(any* value);
 
   private:
-    struct ContainerInterface {
-        virtual ~ContainerInterface() = default;
-        virtual const std::type_info& type() const = 0;
+    template <typename T>
+    struct ErasedDeleter : std::function<void(T*)> {
+        ErasedDeleter() : std::function<void(T*)>{[](T* p) { delete p; }} {}
     };
 
-    template <typename Object>
+    template <typename T>
+    using ErasedPtr = unique_ptr<T, ErasedDeleter<T>>;
+
+    struct ContainerInterface {
+        using Ptr = ErasedPtr<ContainerInterface>;
+
+        virtual ~ContainerInterface() = default;
+        virtual const std::type_info& type() const = 0;
+
+        virtual Ptr copy() const = 0;
+    };
+
+    template <typename ObjectT>
     struct Container : ContainerInterface {
+        using Object = std::decay_t<ObjectT>;
+
+        template <typename... Args>
+        static Ptr make(Args&&... args) {
+            return Ptr(new Container(std::forward<Args>(args)...));
+        }
+
         explicit Container(const Object& _data) : data(_data) {}
         explicit Container(Object&& _data) : data(std::forward<Object>(_data)) {}
         Object data;
 
         const std::type_info& type() const final { return typeid(data); }
+
+        Ptr copy() const final { return make(data); }
     };
 
-    std::shared_ptr<ContainerInterface> container_;
+    ContainerInterface::Ptr container_;
 };
 
 template <typename Object>

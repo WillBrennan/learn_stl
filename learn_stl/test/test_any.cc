@@ -185,3 +185,29 @@ TYPED_TEST(AnyTest, MoveAnyCastBad) {
     ASSERT_THROW({ const auto recovered_value = learn::any_cast<char>(std::move(value)); },
                  std::bad_cast);
 }
+
+TYPED_TEST(AnyTest, CopyConstruction) {
+    using learn::any;
+
+    any value = helpers::generate<TypeParam>();
+    any new_value = value;
+
+    new_value.reset();
+
+    ASSERT_FALSE(new_value.has_value());
+    ASSERT_TRUE(value.has_value());
+
+    ASSERT_EQ(learn::any_cast<TypeParam>(value), helpers::generate<TypeParam>());
+}
+
+TYPED_TEST(AnyTest, MoveConstruction) {
+    using learn::any;
+
+    any value = helpers::generate<TypeParam>();
+    any new_value = std::move(value);
+
+    ASSERT_TRUE(new_value.has_value());
+    ASSERT_FALSE(value.has_value());
+
+    ASSERT_EQ(learn::any_cast<TypeParam>(new_value), helpers::generate<TypeParam>());
+}
