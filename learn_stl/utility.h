@@ -28,4 +28,27 @@ struct make_index_sequence
 template <>
 struct make_index_sequence<1> : index_sequence<0> {};
 
+template <class Value>
+struct remove_reference {
+    using type = Value;
+};
+
+template <class Value>
+struct remove_reference<Value&> {
+    using type = Value;
+};
+
+template <class Value>
+struct remove_reference<Value&&> {
+    using type = Value;
+};
+
+template <class Value>
+using remove_reference_t = typename remove_reference<Value>::type;
+
+template <class Value>
+constexpr typename remove_reference<Value>::type&& move(Value&& value) noexcept {
+    return static_cast<typename remove_reference<Value>::type&&>(value);
+}
+
 }  // namespace learn

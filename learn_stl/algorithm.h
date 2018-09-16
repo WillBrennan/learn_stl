@@ -5,6 +5,8 @@
 #include <functional>
 #include <iterator>
 
+#include "utility.h"
+
 namespace learn {
 // ------------------------------------------------------------------------------------
 // non-modifying algorithms
@@ -290,9 +292,9 @@ inline Iterator search_n(Iterator first, Iterator last, Size count, const T& val
 
 template <class T>
 constexpr void swap(T& a, T& b) {
-    T c = std::move(a);
-    a = std::move(b);
-    b = std::move(c);
+    T c = move(a);
+    a = move(b);
+    b = move(c);
 }
 
 template <typename Iterator>

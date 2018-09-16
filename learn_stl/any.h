@@ -3,9 +3,9 @@
 #include <functional>
 #include <type_traits>
 #include <typeinfo>
-#include <utility>
 
-#include "learn_stl/memory.h"
+#include "memory.h"
+#include "utility.h"
 
 namespace learn {
 class any {
@@ -20,7 +20,7 @@ class any {
         : container_(Container<std::decay_t<Object>>::make(std::forward<Object>(object))) {}
 
     any(const any& other) : container_(other.container_->copy()) {}
-    any(any&& other) : container_(std::move(other.container_)) { other.reset(); }
+    any(any&& other) : container_(learn::move(other.container_)) { other.reset(); }
 
     any& operator=(const any& other) {
         container_ = other.container_->copy();
@@ -28,7 +28,7 @@ class any {
     }
 
     any& operator=(any&& other) {
-        container_ = std::move(other.container_);
+        container_ = ::learn::move(other.container_);
         other.reset();
         return *this;
     }
@@ -139,7 +139,7 @@ Object any_cast(any&& value) {
         throw std::bad_cast();
     }
 
-    return std::move(*value_ptr);
+    return move(*value_ptr);
 }
 
 void swap(any& lhs, any& rhs) { lhs.swap(rhs); }

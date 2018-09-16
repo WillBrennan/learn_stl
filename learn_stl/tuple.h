@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cstdlib>
-#include <utility>
 
 #include "utility.h"
 
@@ -15,7 +14,7 @@ struct tuple_leaf {
   public:
     using type = Type;
     explicit constexpr tuple_leaf(const type& value) : value_(value) {}
-    explicit constexpr tuple_leaf(Type&& value) : value_(std::move(value)) {}
+    explicit constexpr tuple_leaf(Type&& value) : value_(move(value)) {}
 
     Type value_;
 };

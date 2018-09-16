@@ -6,7 +6,8 @@
 #include <iterator>
 #include <memory>
 
-#include "learn_stl/algorithm.h"
+#include "algorithm.h"
+#include "utility.h"
 
 namespace learn {
 template <typename ValueT, class AllocatorT = std::allocator<ValueT>>
@@ -142,7 +143,7 @@ void vector<Value, Allocator>::reserve(size_type new_capacity) {
                 std::memmove(new_begin, begin_, size_ * sizeof(value_type));
             }
         else {
-            std::move(begin_, begin_ + size_, new_begin);
+            move(begin_, begin_ + size_, new_begin);
         }
 
         AllocatorTraits::deallocate(allocator_, begin_, capacity_);
