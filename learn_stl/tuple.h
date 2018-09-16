@@ -1,7 +1,8 @@
 #pragma once
 
 #include <cstdlib>
-#include <utility>
+
+#include <type_traits>
 
 #include "utility.h"
 
@@ -15,7 +16,7 @@ struct tuple_leaf {
   public:
     using type = Type;
     explicit constexpr tuple_leaf(const type& value) : value_(value) {}
-    explicit constexpr tuple_leaf(Type&& value) : value_(std::move(value)) {}
+    explicit constexpr tuple_leaf(Type&& value) : value_(move(value)) {}
 
     Type value_;
 };
@@ -24,7 +25,7 @@ template <std::size_t... Indices, typename... Types>
 struct tuple<index_sequence<Indices...>, Types...> : tuple_leaf<Indices, Types>... {
     explicit constexpr tuple(const Types&... elements) : tuple_leaf<Indices, Types>(elements)... {}
     explicit constexpr tuple(Types&&... elements)
-        : tuple_leaf<Indices, Types>(std::forward<Types>(elements))... {}
+        : tuple_leaf<Indices, Types>(forward<Types>(elements))... {}
 };
 
 template <size_t I, typename Head, typename... Tail>
@@ -70,7 +71,7 @@ template <typename... Types>
 class tuple : public detail::tuple<typename make_index_sequence<sizeof...(Types)>::type, Types...> {
   public:
     explicit constexpr tuple(const Types&... elements) : TupleImpl(elements...) {}
-    explicit constexpr tuple(Types&&... elements) : TupleImpl(std::forward<Types>(elements)...) {}
+    explicit constexpr tuple(Types&&... elements) : TupleImpl(forward<Types>(elements)...) {}
 
   private:
     using TupleImpl = detail::tuple<typename make_index_sequence<sizeof...(Types)>::type, Types...>;

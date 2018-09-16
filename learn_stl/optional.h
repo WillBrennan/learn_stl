@@ -2,7 +2,8 @@
 
 #include <type_traits>
 #include <typeinfo>
-#include <utility>
+
+#include "utility.h"
 
 namespace learn {
 namespace detail {
@@ -31,8 +32,7 @@ class optional {
   public:
     constexpr optional() : has_value_(false) {}
 
-    constexpr optional(Object&& object)
-        : has_value_(true), storage_(std::forward<Object>(object)) {}
+    constexpr optional(Object&& object) : has_value_(true), storage_(forward<Object>(object)) {}
 
     constexpr optional(const Object& object) : has_value_(true), storage_(object) {}
 
@@ -74,12 +74,12 @@ class optional {
         }
 
         if (has_value_ && !other.has_value) {
-            other = std::move(**this);
+            other = move(**this);
             this->operator~();
         }
 
         if (!has_value_ && other.has_value) {
-            **this = std::move(other);
+            **this = move(other);
             other->operator~();
         }
 
@@ -91,7 +91,7 @@ class optional {
     template <typename... Args>
     constexpr Object& emplace(Args&&... args) {
         has_value_ = true;
-        storage_ = std::move(Object(args...));
+        storage_ = move(Object(args...));
         return storage_.value_;
     }
 

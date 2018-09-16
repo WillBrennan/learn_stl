@@ -3,9 +3,9 @@
 #include <functional>
 #include <type_traits>
 #include <typeinfo>
-#include <utility>
 
-#include "learn_stl/memory.h"
+#include "memory.h"
+#include "utility.h"
 
 namespace learn {
 class any {
@@ -17,10 +17,10 @@ class any {
 
     template <typename Object>
     any(Object&& object)
-        : container_(Container<std::decay_t<Object>>::make(std::forward<Object>(object))) {}
+        : container_(Container<std::decay_t<Object>>::make(forward<Object>(object))) {}
 
     any(const any& other) : container_(other.container_->copy()) {}
-    any(any&& other) : container_(std::move(other.container_)) { other.reset(); }
+    any(any&& other) : container_(learn::move(other.container_)) { other.reset(); }
 
     any& operator=(const any& other) {
         container_ = other.container_->copy();
@@ -28,14 +28,14 @@ class any {
     }
 
     any& operator=(any&& other) {
-        container_ = std::move(other.container_);
+        container_ = ::learn::move(other.container_);
         other.reset();
         return *this;
     }
 
     template <typename Object, typename... Args>
     auto& emplace(Args&&... args) {
-        container_ = Container<Object>::make(std::forward<Args>(args)...);
+        container_ = Container<Object>::make(forward<Args>(args)...);
         return static_cast<Container<Object>&>(*container_).data;
     }
 
@@ -81,11 +81,11 @@ class any {
 
         template <typename... Args>
         static Ptr make(Args&&... args) {
-            return Ptr(new Container(std::forward<Args>(args)...));
+            return Ptr(new Container(forward<Args>(args)...));
         }
 
         explicit Container(const Object& _data) : data(_data) {}
-        explicit Container(Object&& _data) : data(std::forward<Object>(_data)) {}
+        explicit Container(Object&& _data) : data(forward<Object>(_data)) {}
         Object data;
 
         const std::type_info& type() const final { return typeid(data); }
@@ -139,7 +139,7 @@ Object any_cast(any&& value) {
         throw std::bad_cast();
     }
 
-    return std::move(*value_ptr);
+    return move(*value_ptr);
 }
 
 void swap(any& lhs, any& rhs) { lhs.swap(rhs); }
