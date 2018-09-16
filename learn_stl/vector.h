@@ -3,7 +3,10 @@
 #include <cstring>
 
 #include <algorithm>
+#include <iterator>
 #include <memory>
+
+#include "learn_stl/algorithm.h"
 
 namespace learn {
 template <typename ValueT, class AllocatorT = std::allocator<ValueT>>
@@ -101,7 +104,9 @@ class vector {
         return back();
     }
 
-    void erase(const_iterator first, const_iterator last);
+    void erase(iterator pos) { erase(pos, std::next(pos, 1)); }
+
+    void erase(iterator first, iterator last);
 
     void clear();
 
@@ -132,9 +137,11 @@ void vector<Value, Allocator>::reserve(size_type new_capacity) {
 
     const auto new_begin = AllocatorTraits::allocate(allocator_, new_capacity);
     if (begin_) {
-        if constexpr (std::is_trivially_constructible<Value>::value) {
-            std::memmove(new_begin, begin_, size_ * sizeof(value_type));
-        } else {
+        if
+            constexpr(std::is_trivially_constructible<Value>::value) {
+                std::memmove(new_begin, begin_, size_ * sizeof(value_type));
+            }
+        else {
             std::move(begin_, begin_ + size_, new_begin);
         }
 
@@ -162,7 +169,11 @@ typename vector<Value, Allocator>::size_type vector<Value, Allocator>::recommend
 }
 
 template <typename Value, class Allocator>
-void vector<Value, Allocator>::erase(const_iterator first, const_iterator last) {}
+void vector<Value, Allocator>::erase(iterator first, iterator last) {
+    // rotate so that first->last is at the end of the vector
+    rotate(first, last, end());
+    size_ -= std::distance(first, last);
+}
 
 template <typename Value, class Allocator>
 void vector<Value, Allocator>::clear() {
