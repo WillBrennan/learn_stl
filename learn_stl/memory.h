@@ -32,8 +32,18 @@ class unique_ptr {
     using pointer = T*;
     using deleter_type = Deleter;
 
-    unique_ptr() noexcept : pointer_(nullptr) {}
+    unique_ptr() noexcept = default;
     unique_ptr(pointer p) noexcept : pointer_(p) {}
+
+    unique_ptr(unique_ptr&& other) : pointer_(other.pointer_) { other.pointer_ = nullptr; }
+
+    unique_ptr& operator=(unique_ptr&& other) {
+        reset(other.pointer_);
+        other.pointer_ = nullptr;
+        return *this;
+    }
+
+    unique_ptr& operator=(std::nullptr_t) noexcept { reset(nullptr); }
 
     void reset(pointer ptr = pointer()) noexcept {
         if (pointer_) {
@@ -48,10 +58,12 @@ class unique_ptr {
     pointer operator->() const noexcept { return pointer_; }
     typename std::add_lvalue_reference<T>::type operator*() const { return *pointer_; }
 
+    pointer get() const noexcept { return pointer_; }
+
     explicit operator bool() const noexcept { return bool(pointer_); }
 
   private:
-    pointer pointer_;
+    pointer pointer_ = nullptr;
 };
 
 template <typename Value, class Deleter = default_delete<Value>, typename... Args>

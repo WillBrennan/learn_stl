@@ -57,6 +57,18 @@ TYPED_TEST(UniquePtrTest, Reset) {
     ASSERT_FALSE(some_ptr);
 }
 
+TYPED_TEST(UniquePtrTest, HasValue) {
+    using unique_ptr = learn::unique_ptr<TypeParam>;
+
+    auto some_ptr = unique_ptr{};
+
+    ASSERT_FALSE(some_ptr);
+
+    some_ptr = unique_ptr(new TypeParam(helpers::generate<TypeParam>()));
+
+    ASSERT_TRUE(some_ptr);
+}
+
 template <typename TypeT>
 class MakeUniqueTest : public ::testing::Test {};
 
