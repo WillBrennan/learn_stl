@@ -99,7 +99,7 @@ class vector {
             reserve(recommend(size_));
         }
 
-        AllocatorTraits::construct(allocator_, begin_ + size_, std::forward<Args>(args)...);
+        AllocatorTraits::construct(allocator_, begin_ + size_, forward<Args>(args)...);
         size_ += 1;
 
         return back();

@@ -17,7 +17,7 @@ class any {
 
     template <typename Object>
     any(Object&& object)
-        : container_(Container<std::decay_t<Object>>::make(std::forward<Object>(object))) {}
+        : container_(Container<std::decay_t<Object>>::make(forward<Object>(object))) {}
 
     any(const any& other) : container_(other.container_->copy()) {}
     any(any&& other) : container_(learn::move(other.container_)) { other.reset(); }
@@ -35,7 +35,7 @@ class any {
 
     template <typename Object, typename... Args>
     auto& emplace(Args&&... args) {
-        container_ = Container<Object>::make(std::forward<Args>(args)...);
+        container_ = Container<Object>::make(forward<Args>(args)...);
         return static_cast<Container<Object>&>(*container_).data;
     }
 
@@ -81,11 +81,11 @@ class any {
 
         template <typename... Args>
         static Ptr make(Args&&... args) {
-            return Ptr(new Container(std::forward<Args>(args)...));
+            return Ptr(new Container(forward<Args>(args)...));
         }
 
         explicit Container(const Object& _data) : data(_data) {}
-        explicit Container(Object&& _data) : data(std::forward<Object>(_data)) {}
+        explicit Container(Object&& _data) : data(forward<Object>(_data)) {}
         Object data;
 
         const std::type_info& type() const final { return typeid(data); }

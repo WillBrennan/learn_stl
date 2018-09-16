@@ -51,4 +51,14 @@ constexpr typename remove_reference<Value>::type&& move(Value&& value) noexcept 
     return static_cast<typename remove_reference<Value>::type&&>(value);
 }
 
+template <class Value>
+constexpr Value&& forward(typename remove_reference<Value>::type& value) noexcept {
+    return static_cast<Value&&>(value);
+}
+
+template <class Value>
+constexpr Value&& forward(typename remove_reference<Value>::type&& value) noexcept {
+    return static_cast<Value&&>(value);
+}
+
 }  // namespace learn

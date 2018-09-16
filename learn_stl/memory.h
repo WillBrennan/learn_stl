@@ -1,7 +1,8 @@
 #pragma once
 
 #include <type_traits>
-#include <utility>
+
+#include "utility.h"
 
 namespace learn {
 
@@ -68,7 +69,7 @@ class unique_ptr {
 
 template <typename Value, class Deleter = default_delete<Value>, typename... Args>
 unique_ptr<Value, Deleter> make_unique(Args&&... args) {
-    return unique_ptr<Value, Deleter>(new Value(std::forward<Args>(args)...));
+    return unique_ptr<Value, Deleter>(new Value(forward<Args>(args)...));
 }
 
 }  // namespace learn

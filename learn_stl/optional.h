@@ -32,8 +32,7 @@ class optional {
   public:
     constexpr optional() : has_value_(false) {}
 
-    constexpr optional(Object&& object)
-        : has_value_(true), storage_(std::forward<Object>(object)) {}
+    constexpr optional(Object&& object) : has_value_(true), storage_(forward<Object>(object)) {}
 
     constexpr optional(const Object& object) : has_value_(true), storage_(object) {}
 
