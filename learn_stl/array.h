@@ -5,6 +5,7 @@
 #include <iterator>
 #include <stdexcept>
 
+#include "algorithm.h"
 #include "tuple.h"
 
 namespace learn {
@@ -46,7 +47,7 @@ struct array {
     constexpr size_type max_size() const noexcept { return Size; }
 
     void fill(const value_type& value) { std::fill_n(elems_, Size, value); }
-    void swap(array& other) { std::swap(elems_, other.elems_); }
+    void swap(array& other) { ::learn::swap(elems_, other.elems_); }
 
     constexpr reference at(size_type pos) {
         if (pos >= Size) {

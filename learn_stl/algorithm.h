@@ -292,9 +292,9 @@ inline Iterator search_n(Iterator first, Iterator last, Size count, const T& val
 
 template <class T>
 constexpr void swap(T& a, T& b) {
-    T c = move(a);
-    a = move(b);
-    b = move(c);
+    T c = ::learn::move(a);
+    a = ::learn::move(b);
+    b = ::learn::move(c);
 }
 
 template <typename Iterator>

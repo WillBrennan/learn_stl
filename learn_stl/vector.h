@@ -138,11 +138,9 @@ void vector<Value, Allocator>::reserve(size_type new_capacity) {
 
     const auto new_begin = AllocatorTraits::allocate(allocator_, new_capacity);
     if (begin_) {
-        if
-            constexpr(std::is_trivially_constructible<Value>::value) {
-                std::memmove(new_begin, begin_, size_ * sizeof(value_type));
-            }
-        else {
+        if constexpr (std::is_trivially_constructible<Value>::value) {
+            std::memmove(new_begin, begin_, size_ * sizeof(value_type));
+        } else {
             move(begin_, begin_ + size_, new_begin);
         }
 

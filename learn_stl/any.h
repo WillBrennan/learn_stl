@@ -4,6 +4,7 @@
 #include <type_traits>
 #include <typeinfo>
 
+#include "algorithm.h"
 #include "memory.h"
 #include "utility.h"
 
@@ -40,7 +41,7 @@ class any {
     }
 
     void reset() noexcept { container_.reset(); }
-    void swap(any& other) noexcept { std::swap(container_, other.container_); }
+    void swap(any& other) noexcept { ::learn::swap(container_, other.container_); }
 
     bool has_value() const noexcept { return bool(container_); }
     const std::type_info& type() const noexcept {
