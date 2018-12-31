@@ -3,7 +3,7 @@
 
 Ever wondered how std::tuple is implemented? How std::get works? Well I started implementing this to find out just that.
 
-The standard library heavily relies on many [C++ Idioms](https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms) and unusual language features, by approximately implementing the library you can get a bit more familiar with them!
+The standard library heavily relies on many [C++ Idioms](https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms) and unusual language features, by implementing the library you can get a bit more familiar with them!
 
 ### Vocab Types
 #### `any`
@@ -11,9 +11,6 @@ Any is the de-facto type-erasure method in C++, it provides type-safe container 
 
 #### `optional`
 How can you store an object without a default-constructor on the stack? Well with a `union` is how, but what is this weird special type.
-
-#### `variant`
-
 
 #### `tuple`
 Tuple heavily depends on variadic templates and `std::index_sequence`, and isn't obvious how its implemented. It's a refreshing look at 
