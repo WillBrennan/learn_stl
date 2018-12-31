@@ -3,6 +3,7 @@
 #include <type_traits>
 #include <typeinfo>
 
+#include "algorithm.h"
 #include "utility.h"
 
 namespace learn {
@@ -83,7 +84,7 @@ class optional {
             other->operator~();
         }
 
-        std::swap(**this, *other);
+        ::learn::swap(**this, *other);
     }
 
     constexpr void reset() noexcept { has_value_ = false; }
