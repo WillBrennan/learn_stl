@@ -6,25 +6,25 @@ Ever wondered how std::tuple is implemented? How std::get works? Well I started 
 The standard library heavily relies on many [C++ Idioms](https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms) and unusual language features, by implementing the library you can get a bit more familiar with them!
 
 ### Vocab Types
-#### `any`
+#### [`any`](https://github.com/WillBrennan/learn_stl/blob/master/docs/any.md)
 Any is the de-facto type-erasure method in C++, it provides type-safe container for single values of any type. The implementation provides an introduction to polymorphism in C++.
 
-#### `optional`
+#### [`optional`](https://github.com/WillBrennan/learn_stl/blob/master/docs/optional.md)
 How can you store an object without a default-constructor on the stack? Well with a `union` is how, but what is this weird special type.
 
-#### `tuple`
+#### [`tuple`](https://github.com/WillBrennan/learn_stl/blob/master/docs/tuple.md)
 Tuple heavily depends on variadic templates and `std::index_sequence`, and isn't obvious how its implemented. It's a refreshing look at 
 features which aren't used day-to-day.
 
 ### Containers
-#### `array`
+#### [`array`](https://github.com/WillBrennan/learn_stl/blob/master/docs/array.md)
 Array is deceptively simple, but how are its constructors and destructors implicity declared? Why is array constexpr but vector isn't, and what is aggregate-initialization?
 Understanding Array requires a strong comprehension of these often over-looked language features.
 
-#### `vector`
+#### [`vector`](https://github.com/WillBrennan/learn_stl/blob/master/docs/vector.md)
 Everyone knows `std::vector` right? But why is reserving so important? And what is `std::allocator` and why wrap it in `std::allocator_traits`?
 
-#### `valarray`
+#### [`valarray`](https://github.com/WillBrennan/learn_stl/blob/master/docs/valarray.md)
 `valarray` provides an introduction to expression-templates. It stores elements in a vector, and it provides element-wise unary and binary operations. It won't create any temporaries and will only perform one iteration as it evaluates the expression for each resultant element.
 
 ### Smart Pointers
