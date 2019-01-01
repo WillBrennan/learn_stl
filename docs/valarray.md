@@ -3,7 +3,7 @@
 
 Expression templates are commonly found in numerical libraries to speed up the cost of operations as memory-bandwidth matters more than computational time. Consider, 
 
-```
+```cpp
 learn::vector<double> values(30000, 0.4);
 
 for (auto& value: values) {
@@ -20,7 +20,7 @@ for (auto& value: values) {
 ```
 , this snippet loops through the data three times, versus the single loop version which will only loop through the data once, 
 
-```
+```cpp
 learn::vector<double> values(30000, 0.4);
 
 for (auto& value: values) {
