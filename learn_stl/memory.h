@@ -1,5 +1,6 @@
 #pragma once
 
+#include <new>
 #include <type_traits>
 
 #include "utility.h"
@@ -70,6 +71,49 @@ class unique_ptr {
 template <typename Value, class Deleter = default_delete<Value>, typename... Args>
 unique_ptr<Value, Deleter> make_unique(Args&&... args) {
     return unique_ptr<Value, Deleter>(new Value(forward<Args>(args)...));
+}
+
+template <class T>
+struct allocator {
+    using value_type = T;
+    using size_type = std::size_t;
+    using difference_type = std::ptrdiff_t;
+    using propagate_on_container_move_assignment = std::true_type;
+    using is_always_equal = std::true_type;
+
+    allocator() noexcept = default;
+    allocator(const allocator& other) noexcept = default;
+
+    template <class U>
+    allocator(const allocator<U>& other) noexcept {};
+
+    ~allocator() = default;
+
+    value_type* allocate(size_type n) {
+        const auto num_bytes = size_type{n * sizeof(T)};
+        const auto alignment = std::align_val_t{alignof(T)};
+
+        return static_cast<T*>(::operator new(num_bytes, alignment));
+    }
+
+    void deallocate(T* p, std::size_t n) {
+        const auto num_bytes = size_type{n * sizeof(T)};
+        const auto alignment = std::align_val_t{alignof(T)};
+
+        ::operator delete(p, alignment);
+    }
+
+    size_type max_size() const noexcept { return size_type(~0) / sizeof(T); }
+};
+
+template <class T1, class T2>
+bool operator==(const allocator<T1>& lhs, const allocator<T2>& rhs) noexcept {
+    return true;
+}
+
+template <class T1, class T2>
+bool operator!=(const allocator<T1>& lhs, const allocator<T2>& rhs) noexcept {
+    return false;
 }
 
 }  // namespace learn

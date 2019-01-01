@@ -4,13 +4,13 @@
 
 #include <algorithm>
 #include <iterator>
-#include <memory>
 
 #include "algorithm.h"
+#include "memory.h"
 #include "utility.h"
 
 namespace learn {
-template <typename ValueT, class AllocatorT = std::allocator<ValueT>>
+template <typename ValueT, class AllocatorT = allocator<ValueT>>
 class vector {
   public:
     using value_type = ValueT;
