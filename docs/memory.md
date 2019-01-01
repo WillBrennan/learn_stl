@@ -124,7 +124,7 @@ int main() {
     
     MyClass(PtrA(new ComponentA{}), PtrB(new ComponentB{}));
 }
-``
+```
 . When we attempt to construct `ComponentB` we throw an error, then `ComponentA` is leaked. This is due to the unspecified evaluation order, by constructing the `unique_ptr` and calling `::operator new` in the same scope we can avoid this. This is the problem that `make_unique` solves. To avoid the leak, we instead create `MyClass` using `make_unique`, 
 
 ```cpp
