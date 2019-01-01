@@ -8,7 +8,7 @@ Each of the components have documentation in *[/docs](https://github.com/WillBre
 
 Hopefully you'll find this an interesting read!
 
-Feel free to submit a PRs adding more components or improving library / documentation!
+Feel free to submit a PR adding more components or improving library / documentation!
 
 ### Vocab Types
 #### [`any`](https://github.com/WillBrennan/learn_stl/blob/master/docs/any.md)
