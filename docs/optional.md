@@ -50,7 +50,7 @@ union optional_storage {
 };
 }  // namespace detail
 ```
-. As `dummy_t` is an empty class; [Empty base optimization](https://en.cppreference.com/w/cpp/language/ebo) can be used, this means that `sizeof(optional_storage) == sizeof(T)`. Unfortunately, `sizeof(optional<T>) > sizeof(T)` as `optional_storage` does not tell us what value its storing, `optional` holds this information as a bool. This lets `optional` perform the same operations as `unique_ptr` without dynamic allocation, 
+. As `dummy_t` is an empty class; it means that `sizeof(optional_storage) == sizeof(T)`. Unfortunately, `sizeof(optional<T>) > sizeof(T)` as `optional_storage` does not tell us what value its storing, `optional` holds this information as a bool. This lets `optional` perform the same operations as `unique_ptr` without dynamic allocation, 
 
 ```cpp
 template <typename Object>
