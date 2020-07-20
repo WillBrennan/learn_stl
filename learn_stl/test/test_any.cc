@@ -17,7 +17,7 @@ class AnyTest : public ::testing::Test {
 };
 
 using Types = testing::Types<double, float, int, unsigned char>;
-TYPED_TEST_CASE(AnyTest, Types);
+TYPED_TEST_SUITE(AnyTest, Types);
 
 TYPED_TEST(AnyTest, construction) {
     using learn::any;

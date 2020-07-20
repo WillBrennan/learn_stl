@@ -10,7 +10,7 @@ template <typename TypeT>
 class AddressOfTest : public ::testing::Test {};
 
 using Types = testing::Types<double, float, int, unsigned char, learn::array<double, 3>>;
-TYPED_TEST_CASE(AddressOfTest, Types);
+TYPED_TEST_SUITE(AddressOfTest, Types);
 
 TYPED_TEST(AddressOfTest, NoOverload) {
     using learn::addressof;
@@ -23,7 +23,7 @@ TYPED_TEST(AddressOfTest, NoOverload) {
 template <typename TypeT>
 class UniquePtrTest : public ::testing::Test {};
 
-TYPED_TEST_CASE(UniquePtrTest, Types);
+TYPED_TEST_SUITE(UniquePtrTest, Types);
 
 TYPED_TEST(UniquePtrTest, CtorsEmpty) {
     using learn::unique_ptr;
@@ -72,7 +72,7 @@ TYPED_TEST(UniquePtrTest, HasValue) {
 template <typename TypeT>
 class MakeUniqueTest : public ::testing::Test {};
 
-TYPED_TEST_CASE(MakeUniqueTest, Types);
+TYPED_TEST_SUITE(MakeUniqueTest, Types);
 
 TYPED_TEST(MakeUniqueTest, Construct) {
     using learn::make_unique;

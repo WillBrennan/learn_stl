@@ -13,7 +13,7 @@ class OptionalTest : public ::testing::Test {
 };
 
 using Types = testing::Types<double, float, int, unsigned char, learn::array<double, 3>>;
-TYPED_TEST_CASE(OptionalTest, Types);
+TYPED_TEST_SUITE(OptionalTest, Types);
 
 TYPED_TEST(OptionalTest, createEmpty) {
     using Optional = learn::optional<TypeParam>;
