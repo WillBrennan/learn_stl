@@ -97,6 +97,7 @@ template <typename... Types>
 class variant {
   public:
     static_assert(0 < sizeof...(Types), "variant must consist of at least one alternative");
+    using storage = aligned_storage<detail::max_sizeof<Types...>(), detail::max_align<Types...>()>;
 
     constexpr variant();
 
@@ -110,31 +111,12 @@ class variant {
 
     constexpr std::size_t index() const noexcept { return type_id_; }
 
-    template <std::size_t I, typename... OtherTypes>
-    friend const auto& get(const variant<OtherTypes...>& value) {
-        static_assert(I < sizeof...(OtherTypes), "index exceeds number of stored types");
-        using T = typename detail::type_at_index<I, OtherTypes...>::type;
-        if (I != value.index()) {
-            throw bad_variant_access{};
-        }
+    storage& store() { return storage_; }
 
-        return *reinterpret_cast<const T*>(&value.storage_);
-    }
-
-    template <std::size_t I, typename... OtherTypes>
-    friend auto& get(variant<OtherTypes...>& value) {
-        static_assert(I < sizeof...(OtherTypes), "index exceeds number of stored types");
-        using T = typename detail::type_at_index<I, OtherTypes...>::type;
-        if (I != value.index()) {
-            throw bad_variant_access{};
-        }
-
-        return *reinterpret_cast<T*>(&value.storage_);
-    }
+    const storage& store() const { return storage_; }
 
   private:
     using size_type = std::size_t;
-    using storage = aligned_storage<detail::max_sizeof<Types...>(), detail::max_align<Types...>()>;
 
     size_type type_id_ = 0;
     storage storage_;
@@ -181,6 +163,29 @@ variant<Types...>::~variant() {
     detail::variant_helper<Types...>::destroy(type_id_, &storage_);
 }
 
+
+template <std::size_t I, typename... OtherTypes>
+const auto& get(const variant<OtherTypes...>& value) {
+    static_assert(I < sizeof...(OtherTypes), "index exceeds number of stored types");
+    using T = typename detail::type_at_index<I, OtherTypes...>::type;
+    if (I != value.index()) {
+        throw bad_variant_access{};
+    }
+
+    return *reinterpret_cast<const T*>(&value.store());
+}
+
+template <std::size_t I, typename... OtherTypes>
+auto& get(variant<OtherTypes...>& value) {
+    static_assert(I < sizeof...(OtherTypes), "index exceeds number of stored types");
+    using T = typename detail::type_at_index<I, OtherTypes...>::type;
+    if (I != value.index()) {
+        throw bad_variant_access{};
+    }
+
+    return *reinterpret_cast<T*>(&value.store());
+}
+
 template <class T, typename... OtherTypes>
 const auto& get(const variant<OtherTypes...>& value) {
     constexpr auto index = detail::index_of<T, OtherTypes...>();
@@ -204,5 +209,7 @@ auto& get(variant<OtherTypes...>& value) {
 
     return get<index>(value);
 }
+
+
 
 }  // namespace learn
